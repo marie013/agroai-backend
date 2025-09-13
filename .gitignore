@@ -1,0 +1,17 @@
+# entornos virtuales
+.venv/
+env/
+
+# bases de datos locales
+*.db
+data/
+
+# configuraciones sensibles
+.env
+
+# cache y pyc
+__pycache__/
+*.pyc
+
+# dependencias node si en el futuro agregas frontend
+node_modules/
