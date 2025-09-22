@@ -1,14 +1,17 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 from pathlib import Path
 import shutil
 from uuid import uuid4
+from sqlmodel import Session
+from app.db import get_session
+from app.models import Document
 
 router = APIRouter()
 UPLOAD_DIR = Path("data/uploads")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 @router.post("/")
-async def upload_file(file: UploadFile= File(...)):
+async def upload_file(file: UploadFile= File(...), session: Session = Depends(get_session)):
     if not file.filename:
         raise HTTPException(status_code=400, detail="No file")
     ext = Path(file.filename).suffix
@@ -16,4 +19,8 @@ async def upload_file(file: UploadFile= File(...)):
     with dest.open("wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     #processing
-    return {"filename" : dest.name, "path": str(dest)}
+    document = Document(file_name = file.filename, path= str(dest))
+    session.add()
+    session.commit()
+    session.refresh(document)
+    return {"id": document.id, "name_file": document.name_file, "path": document.path}

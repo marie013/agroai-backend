@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/agroai.db")
 
+#echo true para debug
 engine = create_engine(DATABASE_URL, echo=False)
 
 def init_db():
