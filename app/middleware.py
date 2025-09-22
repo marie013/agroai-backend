@@ -9,8 +9,13 @@ PII_PATTERNS = [
     re.compile(r"\+?\d{7,15}\b"),  # teléfono básico
 ]
 
+EXCLUDED_PATHS = ["/upload"]
+
 class PiiMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        if request.url.path.startswith(tuple(EXCLUDED_PATHS)):
+            return await call_next(request)
+
         if request.method in ("POST", "PUT"):
             body = await request.body()
             text = body.decode("utf-8", errors="ignore")
