@@ -19,8 +19,8 @@ async def upload_file(file: UploadFile= File(...), session: Session = Depends(ge
     with dest.open("wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     #processing
-    document = Document(file_name = file.filename, path= str(dest))
-    session.add()
+    document = Document(name_file= file.filename, path= str(dest))
+    session.add(document)
     session.commit()
     session.refresh(document)
     return {"id": document.id, "name_file": document.name_file, "path": document.path}
